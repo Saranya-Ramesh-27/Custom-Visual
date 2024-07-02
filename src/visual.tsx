@@ -75,6 +75,7 @@ export class Visual implements IVisual {
     this.formattingSettings = updatedSettings;
 
     const { bold, italic, underline, scaling, theme } = updatedSettings;
+
     this.host.persistProperties({
       merge: [
         {
@@ -84,6 +85,7 @@ export class Visual implements IVisual {
         }
       ]
     });
+
     this.render();
   };
 

@@ -64,7 +64,7 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
 
 const TableVisual = ({ row, col, formattingSettings, onSettingsChange, selectionManager, host, rowLevels }) => {
     const [selectedRowIndex, setSelectedRowIndex] = react__WEBPACK_IMPORTED_MODULE_1__.useState(null);
-    const handleRowClick = (row, rowIndex) => __awaiter(void 0, void 0, void 0, function* () {
+    const handleSelection = (row, rowIndex) => __awaiter(void 0, void 0, void 0, function* () {
         const selectionId = host
             .createSelectionIdBuilder()
             .withMatrixNode(row, rowLevels)
@@ -72,17 +72,13 @@ const TableVisual = ({ row, col, formattingSettings, onSettingsChange, selection
         yield selectionManager.select(selectionId);
         setSelectedRowIndex(rowIndex);
     });
-    const handleToggle = (property) => {
-        const newSettings = Object.assign(Object.assign({}, formattingSettings), { [property]: !formattingSettings[property] });
-        onSettingsChange(newSettings);
-    };
-    const handleThemeChange = (key) => {
+    const ThemeChange = (key) => {
         onSettingsChange(Object.assign(Object.assign({}, formattingSettings), { theme: key }));
     };
-    const handleScalingChange = (key) => {
+    const ScalingChange = (key) => {
         onSettingsChange(Object.assign(Object.assign({}, formattingSettings), { scaling: key }));
     };
-    const formatNumber = (value, scaling) => {
+    const scalingFormat = (value, scaling) => {
         const numericValue = typeof value === 'string' ? parseFloat(value.replace(/[^\d.-]/g, '')) : value;
         if (!isNaN(numericValue) && isFinite(numericValue)) {
             switch (scaling) {
@@ -99,34 +95,38 @@ const TableVisual = ({ row, col, formattingSettings, onSettingsChange, selection
             return '';
         }
     };
+    const handleToggle = (property) => {
+        const newSettings = Object.assign(Object.assign({}, formattingSettings), { [property]: !formattingSettings[property] });
+        onSettingsChange(newSettings);
+    };
     return (react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: `table-visual ${formattingSettings.theme === 'dark' ? 'dark-theme' : 'light-theme'}` },
-        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "table-visual-header" },
-            react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "left-section" },
+        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "table-header" },
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "left-div" },
                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("h2", null, "Custom Visual"),
                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "formatting-controls" },
                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "label" },
-                        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null, "Formatting"),
+                        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null, "Theme"),
                         react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null,
-                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `formatting-button ${formattingSettings.bold ? 'active' : ''}`, onClick: () => handleToggle('bold') },
-                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faBold */ .l5I })),
-                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `formatting-button ${formattingSettings.italic ? 'active' : ''}`, onClick: () => handleToggle('italic') },
-                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faItalic */ .SIw })),
-                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `formatting-button ${formattingSettings.underline ? 'active' : ''}`, onClick: () => handleToggle('underline') },
-                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faUnderline */ .chs })))),
+                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("select", { value: formattingSettings.theme, onChange: (e) => ThemeChange(e.target.value) },
+                                react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "light" }, "Light"),
+                                react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "dark" }, "Dark")))),
                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "label" },
                         react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null, "Scaling"),
                         react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null,
-                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("select", { value: formattingSettings.scaling, onChange: (e) => handleScalingChange(e.target.value) },
+                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("select", { value: formattingSettings.scaling, onChange: (e) => ScalingChange(e.target.value) },
                                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "none" }, "None"),
                                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "thousands" }, "Thousands"),
                                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "millions" }, "Millions")))),
                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "label" },
-                        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null, "Theme"),
+                        react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null, "Formatting"),
                         react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", null,
-                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("select", { value: formattingSettings.theme, onChange: (e) => handleThemeChange(e.target.value) },
-                                react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "light" }, "Light"),
-                                react__WEBPACK_IMPORTED_MODULE_1__.createElement("option", { value: "dark" }, "Dark")))))),
-            react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "right-section" },
+                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `button ${formattingSettings.bold ? 'active' : ''}`, onClick: () => handleToggle('bold') },
+                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faBold */ .l5I })),
+                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `button ${formattingSettings.italic ? 'active' : ''}`, onClick: () => handleToggle('italic') },
+                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faItalic */ .SIw })),
+                            react__WEBPACK_IMPORTED_MODULE_1__.createElement("button", { className: `button ${formattingSettings.underline ? 'active' : ''}`, onClick: () => handleToggle('underline') },
+                                react__WEBPACK_IMPORTED_MODULE_1__.createElement(_fortawesome_react_fontawesome__WEBPACK_IMPORTED_MODULE_0__/* .FontAwesomeIcon */ .g, { icon: _fortawesome_free_solid_svg_icons__WEBPACK_IMPORTED_MODULE_2__/* .faUnderline */ .chs })))))),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement("div", { className: "right-div" },
                 react__WEBPACK_IMPORTED_MODULE_1__.createElement("table", { className: "table" },
                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("thead", null,
                         react__WEBPACK_IMPORTED_MODULE_1__.createElement("tr", null,
@@ -140,14 +140,14 @@ const TableVisual = ({ row, col, formattingSettings, onSettingsChange, selection
                             }))),
                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("tbody", null, row.map((rowData, rowIndex) => {
                         var _a, _b;
-                        return (react__WEBPACK_IMPORTED_MODULE_1__.createElement("tr", { key: rowIndex, onClick: () => handleRowClick(rowData, rowIndex), className: selectedRowIndex === rowIndex ? 'selected' : '' },
+                        return (react__WEBPACK_IMPORTED_MODULE_1__.createElement("tr", { key: rowIndex, onClick: () => handleSelection(rowData, rowIndex), className: selectedRowIndex === rowIndex ? 'selected' : '' },
                             react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", null, (_b = (_a = rowData.levelValues) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.value),
                             col.map((column, colIndex) => {
                                 var _a, _b, _c, _d, _e, _f, _g, _h;
                                 return (react__WEBPACK_IMPORTED_MODULE_1__.createElement("td", { key: `${rowIndex}-${colIndex}` },
                                     react__WEBPACK_IMPORTED_MODULE_1__.createElement("span", { className: `formatted-cell ${formattingSettings.bold ? 'bold' : ''} ${formattingSettings.italic ? 'italic' : ''} ${formattingSettings.underline ? 'underline' : ''}` }, !isNaN((_b = (_a = rowData.values) === null || _a === void 0 ? void 0 : _a[colIndex]) === null || _b === void 0 ? void 0 : _b.value) &&
                                         isFinite((_d = (_c = rowData.values) === null || _c === void 0 ? void 0 : _c[colIndex]) === null || _d === void 0 ? void 0 : _d.value)
-                                        ? formatNumber((_f = (_e = rowData.values) === null || _e === void 0 ? void 0 : _e[colIndex]) === null || _f === void 0 ? void 0 : _f.value, formattingSettings.scaling)
+                                        ? scalingFormat((_f = (_e = rowData.values) === null || _e === void 0 ? void 0 : _e[colIndex]) === null || _f === void 0 ? void 0 : _f.value, formattingSettings.scaling)
                                         : (_h = (_g = rowData.values) === null || _g === void 0 ? void 0 : _g[colIndex]) === null || _h === void 0 ? void 0 : _h.value)));
                             })));
                     })))))));

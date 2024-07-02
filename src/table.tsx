@@ -29,7 +29,7 @@ const TableVisual: React.FC<TableVisualProps> = ({
 }) => {
   const [selectedRowIndex, setSelectedRowIndex] = React.useState<number | null>(null);
 
-  const handleRowClick = async (row: any, rowIndex: number) => {
+  const handleSelection = async (row: any, rowIndex: number) => {
     const selectionId: ISelectionId = host
       .createSelectionIdBuilder()
       .withMatrixNode(row, rowLevels)
@@ -38,24 +38,15 @@ const TableVisual: React.FC<TableVisualProps> = ({
     setSelectedRowIndex(rowIndex);
   };
 
-  const handleToggle = (property: keyof VisualFormattingSettingsModel) => {
-    const newSettings: VisualFormattingSettingsModel = {
-      ...formattingSettings,
-      [property]: !formattingSettings[property]
-    };
-
-    onSettingsChange(newSettings);
-  };
-
-  const handleThemeChange = (key: VisualFormattingSettingsModel['theme']) => {
+  const ThemeChange = (key: VisualFormattingSettingsModel['theme']) => {
     onSettingsChange({ ...formattingSettings, theme: key });
   };
 
-  const handleScalingChange = (key: VisualFormattingSettingsModel['scaling']) => {
+  const ScalingChange = (key: VisualFormattingSettingsModel['scaling']) => {
     onSettingsChange({ ...formattingSettings, scaling: key });
   };
 
-  const formatNumber = (
+  const scalingFormat = (
     value: number | string,
     scaling: VisualFormattingSettingsModel['scaling']
   ): string => {
@@ -77,33 +68,35 @@ const TableVisual: React.FC<TableVisualProps> = ({
     }
   };
 
+  const handleToggle = (property: keyof VisualFormattingSettingsModel) => {
+    const newSettings: VisualFormattingSettingsModel = {
+      ...formattingSettings,
+      [property]: !formattingSettings[property]
+    };
+
+    onSettingsChange(newSettings);
+  };
+
   return (
     <div
       className={`table-visual ${
         formattingSettings.theme === 'dark' ? 'dark-theme' : 'light-theme'
       }`}>
-      <div className="table-visual-header">
-        <div className="left-section">
+      <div className="table-header">
+        <div className="left-div">
           <h2>Custom Visual</h2>
           <div className="formatting-controls">
             <div className="label">
-              <div>Formatting</div>
+              <div>Theme</div>
               <div>
-                <button
-                  className={`formatting-button ${formattingSettings.bold ? 'active' : ''}`}
-                  onClick={() => handleToggle('bold')}>
-                  <FontAwesomeIcon icon={faBold} />
-                </button>
-                <button
-                  className={`formatting-button ${formattingSettings.italic ? 'active' : ''}`}
-                  onClick={() => handleToggle('italic')}>
-                  <FontAwesomeIcon icon={faItalic} />
-                </button>
-                <button
-                  className={`formatting-button ${formattingSettings.underline ? 'active' : ''}`}
-                  onClick={() => handleToggle('underline')}>
-                  <FontAwesomeIcon icon={faUnderline} />
-                </button>
+                <select
+                  value={formattingSettings.theme}
+                  onChange={(e) =>
+                    ThemeChange(e.target.value as VisualFormattingSettingsModel['theme'])
+                  }>
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                </select>
               </div>
             </div>
             <div className="label">
@@ -112,7 +105,7 @@ const TableVisual: React.FC<TableVisualProps> = ({
                 <select
                   value={formattingSettings.scaling}
                   onChange={(e) =>
-                    handleScalingChange(e.target.value as VisualFormattingSettingsModel['scaling'])
+                    ScalingChange(e.target.value as VisualFormattingSettingsModel['scaling'])
                   }>
                   <option value="none">None</option>
                   <option value="thousands">Thousands</option>
@@ -121,21 +114,28 @@ const TableVisual: React.FC<TableVisualProps> = ({
               </div>
             </div>
             <div className="label">
-              <div>Theme</div>
+              <div>Formatting</div>
               <div>
-                <select
-                  value={formattingSettings.theme}
-                  onChange={(e) =>
-                    handleThemeChange(e.target.value as VisualFormattingSettingsModel['theme'])
-                  }>
-                  <option value="light">Light</option>
-                  <option value="dark">Dark</option>
-                </select>
+                <button
+                  className={`button ${formattingSettings.bold ? 'active' : ''}`}
+                  onClick={() => handleToggle('bold')}>
+                  <FontAwesomeIcon icon={faBold} />
+                </button>
+                <button
+                  className={`button ${formattingSettings.italic ? 'active' : ''}`}
+                  onClick={() => handleToggle('italic')}>
+                  <FontAwesomeIcon icon={faItalic} />
+                </button>
+                <button
+                  className={`button ${formattingSettings.underline ? 'active' : ''}`}
+                  onClick={() => handleToggle('underline')}>
+                  <FontAwesomeIcon icon={faUnderline} />
+                </button>
               </div>
             </div>
           </div>
         </div>
-        <div className="right-section">
+        <div className="right-div">
           <table className="table">
             <thead>
               <tr>
@@ -151,7 +151,7 @@ const TableVisual: React.FC<TableVisualProps> = ({
               {row.map((rowData, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  onClick={() => handleRowClick(rowData, rowIndex)}
+                  onClick={() => handleSelection(rowData, rowIndex)}
                   className={selectedRowIndex === rowIndex ? 'selected' : ''}>
                   <td>{rowData.levelValues?.[0]?.value}</td>
                   {col.map((column, colIndex) => (
@@ -164,7 +164,7 @@ const TableVisual: React.FC<TableVisualProps> = ({
                         }`}>
                         {!isNaN(rowData.values?.[colIndex]?.value) &&
                         isFinite(rowData.values?.[colIndex]?.value)
-                          ? formatNumber(
+                          ? scalingFormat(
                               rowData.values?.[colIndex]?.value,
                               formattingSettings.scaling
                             )

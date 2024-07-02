@@ -18,7 +18,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.table-visual-header {
+.table-header {
   margin-bottom: 20px;
 }
 
@@ -44,7 +44,7 @@
   font-weight: bold;
 }
 
-.formatting-button {
+.button {
   background: none;
   border: none;
   cursor: pointer;
@@ -53,12 +53,12 @@
   transition: background 0.3s;
 }
 
-.formatting-button.active {
+.button.active {
   background-color: #007bff;
   color: #ffffff;
 }
 
-.formatting-button:hover {
+.button:hover {
   background-color: rgba(0, 123, 255, 0.1);
 }
 
@@ -68,7 +68,7 @@ select {
   border: 1px solid #ccc;
 }
 
-.right-section {
+.right-div {
   width: 100%;
   overflow-x: auto;
 }

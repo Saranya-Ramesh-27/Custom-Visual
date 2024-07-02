@@ -4,12 +4,12 @@ import { formattingSettings } from 'powerbi-visuals-utils-formattingmodel';
 
 // Alias the formatting settings for clarity
 import FormattingSettingsCard = formattingSettings.SimpleCard;
-import FormattingSettingsSlice = formattingSettings.Slice;
 import FormattingSettingsModel = formattingSettings.Model;
 
 /**
  * Formatting settings interface
  */
+
 export interface VisualFormattingSettingsModel {
   bold: boolean;
   italic: boolean;
